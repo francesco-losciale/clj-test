@@ -5,6 +5,8 @@
 
 ;(require '[clj-test.library :as lib])
 
+; collections: persistent immutable data structure (clojure.lang.IPersistentCollection)
+
 ; lists (linked)
 (= (last '(1 2 3)) 3)
 (= (first '(1 2 3)) 1)
@@ -79,3 +81,44 @@
 
 
 (= (lib/function-in-library "Fran") "HelloFran")
+
+
+; conditional logic
+(true? true)
+(false? false)
+(nil? nil)
+(not (nil? "d"))
+(not (not true))
+(not nil)
+(not= (not "hi") true)
+
+(empty? '())
+(not (empty? '(1)))
+
+; sequence: walkable list abstraction of collection
+(seq [1 2 3])
+(class (seq [1 2 3]))
+(class [1 2 3])
+(= (seq []) nil)
+
+; don't use (not (empty? c)) to validate a collection is not empty
+; nil is treated as logically false, so
+; instead it's more idiomatic to use ...
+(= (seq []) nil)
+
+(every? odd? [3 5 7])
+(not (every? odd? [3 5 7 6]))
+(every? #(= % :drinkme) [:drinkme ])
+(every? (fn [x] (= x :drinkme)) [:drinkme ])
+(not (every? (fn [x] (= x :drinkme)) [:drinkme :poison]))
+(= (not-any? (fn [x] (= x :drinkme)) [:drinkme :poison]) false)
+(= (not-any? (fn [x] (= x :drinkme)) [:poison :poison]) true)
+; some returns first true evaluation, nil otherwise
+(some (fn [x] (= x :drinkme)) [:drinkme :poison])
+; set is a function of its members
+(= (#{1 2 3} 2) 2)
+(= (some #{3} [1 2 3]) 3)
+(= (some #{3 4} [1 2 3]) 3)
+(= (some #{4 3 2} [1 2 3]) 2)
+(= (some #{nil} [nil nil nil]) nil)
+(= (some #{false} [false false false]) nil)
