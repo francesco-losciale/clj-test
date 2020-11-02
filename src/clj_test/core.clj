@@ -108,8 +108,8 @@
 
 (every? odd? [3 5 7])
 (not (every? odd? [3 5 7 6]))
-(every? #(= % :drinkme) [:drinkme ])
-(every? (fn [x] (= x :drinkme)) [:drinkme ])
+(every? #(= % :drinkme) [:drinkme])
+(every? (fn [x] (= x :drinkme)) [:drinkme])
 (not (every? (fn [x] (= x :drinkme)) [:drinkme :poison]))
 (= (not-any? (fn [x] (= x :drinkme)) [:drinkme :poison]) false)
 (= (not-any? (fn [x] (= x :drinkme)) [:poison :poison]) true)
@@ -122,3 +122,69 @@
 (= (some #{4 3 2} [1 2 3]) 2)
 (= (some #{nil} [nil nil nil]) nil)
 (= (some #{false} [false false false]) nil)
+
+(= (if true "Hello" "Bye") "Hello")
+; if & let vs if-let
+(defn f1 [] (let [symbol-true true]
+              (if symbol-true
+                symbol-true
+                false
+                )))
+(defn f2 [] (if-let [symbol-true true]
+              symbol-true
+              false
+              ))
+(= (f1) (f2))
+(defn when-true [is-true]
+  (when is-true
+    "True"))
+(= (when-true true) "True")
+(= (when-true false) nil)
+; when & let vs when-let
+(defn f1 [] (let [symbol-true true]
+              (when symbol-true
+                symbol-true
+                )))
+(defn f2 [] (when-let [symbol-true true]
+              symbol-true
+              ))
+(= (f1) (f2))
+
+; cond instead of chain of if-elseif
+(defn f [value]
+  (cond (= value 1) "1"
+        (= value 2) "2"
+        ))
+(= (f 1) "1")
+(= (f 2) "2")
+(= (f 3) nil)
+; cond with default
+(defn f [value]
+  (cond (= value 1) "1"
+        (= value 2) "2"
+        :else "not found"
+        ))
+(= (f 1) "1")
+(= (f 2) "2")
+(= (f 3) "not found")
+; cond default can be anything other than nil
+(defn f [value]
+  (cond (= value 1) "1"
+        (= value 2) "2"
+        "otherwise" "not found"
+        ))
+(= (f 1) "1")
+(= (f 2) "2")
+(= (f 3) "not found")
+
+; use case with value comparison instead of cond
+(defn f [value]
+  (case value
+    1 "1"
+    2 "2"
+    "not found"))
+(= (f 1) "1")
+(= (f 2) "2")
+(= (f 3) "not found")
+
+
