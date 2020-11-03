@@ -187,4 +187,17 @@
 (= (f 2) "2")
 (= (f 3) "not found")
 
-
+; partial functions
+(defn add [l r]
+  (+ l r))
+(= (add 1 2) 3)
+(def addOne (partial add 1))
+(= (addOne 2) 3)
+; comp functions
+(defn subtract [l r]
+  (- l r))
+(= (subtract 1 2) -1)
+(def subtractOne (partial subtract 1))
+(not (= ((comp addOne subtractOne) 0) (subtractOne (addOne 0))))
+(= ((comp addOne subtractOne) 0) (addOne (subtractOne 0)))
+(= ((comp addOne subtractOne) 0) 0)
