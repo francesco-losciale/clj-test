@@ -322,3 +322,49 @@ print-nums                                                  ; only when evaluate
 (= (partition 3 [1 2 3 4 5 6 7 8 9 10]) [[1 2 3] [4 5 6] [ 7 8 9]]) ; ignore extra element (10)
 (= (partition-all 3 [1 2 3 4 5 6 7 8 9 10]) [[1 2 3] [4 5 6] [ 7 8 9] [10]]) ; ignore extra element (10)
 (= (partition-by #(= 6 %) [1 2 3 4 5 6 7 8 9]) [[1 2 3 4 5] [6] [7 8 9]])
+
+; state management (idiomatic to use ! for impure functions)
+(def who-atom (atom :caterpillar))
+(= @who-atom :caterpillar)
+(reset! who-atom :another-one)
+(= @who-atom :another-one)
+(reset! who-atom :caterpillar)
+(defn change [state]
+  (case state
+    :caterpillar :chrysalis
+    :chrysalis :butterfly
+    :butterfly))
+(= (swap! who-atom change) :chrysalis)
+(= (swap! who-atom change) :butterfly)
+(= (swap! who-atom change) :butterfly)
+; swap uses retries so you shouldn't run side effects with it!!!!!!
+(dotimes [n 5] (println n))
+(def counter (atom 0))
+(swap! counter inc)
+(= @counter 1)
+(swap! counter inc)
+(swap! counter inc)
+(= @counter 3)
+(dotimes [_ 10] (swap! counter inc))
+(= @counter 13)
+; concurrency
+(def counter (atom 0))
+(= @counter 0)
+(let [n 5]
+  (future (dotimes [_ n] (swap! counter inc)))
+  (future (dotimes [_ n] (swap! counter inc)))
+  (future (dotimes [_ n] (swap! counter inc)))
+  )
+(= @counter 15)
+; let add a side effect to print the numbers
+(def counter (atom 0))
+(= @counter 0)
+(defn inc-and-print [val]
+  (println val)
+  (inc val))
+(let [n 2]
+  (future (dotimes [_ n] (swap! counter inc-and-print)))
+  (future (dotimes [_ n] (swap! counter inc-and-print)))
+  (future (dotimes [_ n] (swap! counter inc-and-print)))
+  )
+(= @counter 6)
