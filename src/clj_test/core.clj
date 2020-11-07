@@ -201,3 +201,34 @@
 (not (= ((comp addOne subtractOne) 0) (subtractOne (addOne 0))))
 (= ((comp addOne subtractOne) 0) (addOne (subtractOne 0)))
 (= ((comp addOne subtractOne) 0) 0)
+
+; destructuring
+; vectors
+(defn print-name [] (let [[name surname] ["Francesco" "Losciale"]]
+   (str name " " surname)))
+(= (print-name) "Francesco Losciale")
+; vectors using :as
+(defn print-name [] (let [[name surname :as name-and-surname] ["Francesco" "Losciale"]]
+                      (str name " " surname " from array " name-and-surname)))
+(= (print-name) "Francesco Losciale from array [\"Francesco\" \"Losciale\"]")
+; maps
+(defn print-name [] (let [{name :name surname :surname} {:name "Francesco" :surname "Losciale"}]
+                      (str name " " surname)))
+(= (print-name) "Francesco Losciale")
+; maps using :or for default values
+(defn print-name [] (let [{name :name surname :surname :or {surname "missing"}} {:name "Francesco"}]
+                      (str name " " surname)))
+(= (print-name) "Francesco missing")
+; maps using :as
+(defn print-name [] (let [{name :name surname :surname :as name-and-surname} {:name "Francesco" :surname "Losciale"}]
+                      (str name " " surname " from map " name-and-surname)))
+(= (print-name) "Francesco Losciale from map {:name \"Francesco\", :surname \"Losciale\"}")
+; using :keys to extract keys from a map
+(defn print-name [] (let [{:keys [name surname]} {:name "Francesco" :surname "Losciale"}]
+                      (str name " " surname)))
+(= (print-name) "Francesco Losciale")
+; destructuring on function parameter
+(defn print-details[person] (str (:name person) " " (:surname person)))
+(= (print-details {:name "Francesco" :surname "Losciale"}))
+(defn print-details[{:keys [name surname]}] (str name " " surname))
+(= (print-details {:name "Francesco" :surname "Losciale"}))
