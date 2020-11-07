@@ -245,3 +245,13 @@
 (= (repeat 5 (rand-int 10)))
 ; below: it does execute an high-order function repeatedly
 (= (repeatedly 5 #(rand-int 10)))
+
+; recursion
+(def adjs ["normal" "too small" "too big" "swimming"])
+(def expected-result ["Alice is normal" "Alice is too small" "Alice is too big" "Alice is swimming"])
+(defn alice-is [adjs result]
+  (if (empty? adjs)
+    result
+    (alice-is (rest adjs) (conj result (str "Alice is " (first adjs))))
+    ))
+(= (alice-is adjs []) expected-result)
