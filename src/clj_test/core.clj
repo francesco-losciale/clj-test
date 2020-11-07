@@ -232,3 +232,16 @@
 (= (print-details {:name "Francesco" :surname "Losciale"}))
 (defn print-details[{:keys [name surname]}] (str name " " surname))
 (= (print-details {:name "Francesco" :surname "Losciale"}))
+
+; lazy sequence
+(= (range 3) '(0 1 2))
+(= (take 1 (range 3)) '(0))
+(= (count (take 10 (range 1000))) 10)
+(= (repeat 3 "abc") '("abc" "abc" "abc"))                   ; repeat returns another lazy seq
+(= (take 1 (repeat 3 "abc")) '("abc"))
+(= (rand-int 10))
+; below: it does not create sequence of infinite random numbers.
+; it first evaluates rand-int then repeats the result
+(= (repeat 5 (rand-int 10)))
+; below: it does execute an high-order function repeatedly
+(= (repeatedly 5 #(rand-int 10)))
