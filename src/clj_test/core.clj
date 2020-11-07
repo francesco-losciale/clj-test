@@ -255,3 +255,13 @@
     (alice-is (rest adjs) (conj result (str "Alice is " (first adjs))))
     ))
 (= (alice-is adjs []) expected-result)
+; recursion using loop - allows to remove second parameter and implements tail recursion
+(def adjs ["normal" "too small" "too big" "swimming"])
+(def expected-result ["Alice is normal" "Alice is too small" "Alice is too big" "Alice is swimming"])
+(defn alice-is [adjs]
+  (loop [input adjs
+         result []] (if (empty? input)
+     result
+     (recur (rest input) (conj result (str "Alice is " (first input))))
+     )))
+(= (alice-is adjs) expected-result)
