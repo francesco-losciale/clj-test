@@ -265,3 +265,29 @@
      (recur (rest input) (conj result (str "Alice is " (first input))))
      )))
 (= (alice-is adjs) expected-result)
+
+; map
+(= (map #(str %) [1 2 3]) '("1" "2" "3"))
+; returns a LazySeq so it doesn't evaluate impure functions!
+(def print-nums (map #(println %) [1 2 3]))
+print-nums                                                  ; only when evaluated it prints nums
+; force evaluation of side effects with doall
+(def print-nums (doall (map #(println %) [1 2 3])))
+; map can take two collections
+(def names ["Francesco" "Giovanni"])
+(def surnames ["L" "M"])
+(defn print-names [name surname]
+  (str name " " surname "."))
+(= (map print-names names surnames) ["Francesco L." "Giovanni M."])
+; map terminates at the shortest collection
+(def names ["Francesco" "Giovanni" "Pasquale" "Maria"])
+(def surnames ["L" "M"])
+(defn print-names [name surname]
+  (str name " " surname "."))
+(= (map print-names names surnames) ["Francesco L." "Giovanni M."])
+
+; reduce can't accept infinite sequences
+; reduce takes a binary operation (or function with two arguments)
+(= (reduce + [1 2 3]) 6)
+(= (reduce (fn [x y] (+ x y)) [1 2 3]) 6)
+(= (reduce (fn [x y] (if (even? y) (+ x y) y)) [1 2 3]) 3)
