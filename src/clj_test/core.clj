@@ -369,7 +369,7 @@ print-nums                                                  ; only when evaluate
   )
 (= @counter 6)
 
-;transactions
+; state management and concurrency
 ; we need to change two states in the same transaction
 (def alice-height (ref 3))                                  ; increases by 24
 (def right-hand-bites (ref 10))                             ; decreases
@@ -425,3 +425,42 @@ print-nums                                                  ; only when evaluate
 (= @x 5)
 (= @y 7)
 
+; agents - manage state asynchronously
+(def who-agent (agent :caterpillar))
+(= @who-agent :caterpillar)
+(defn change [state]
+  (case state
+    :caterpillar :chrysalis
+    :chrysalis :butterfly
+    :butterfly))
+(send who-agent change)                                     ; asynchronously
+(= @who-agent :chrysalis)                                   ; this could not be true
+(send-off who-agent change)                                 ; send-off to have extensible thread pool
+(= @who-agent :butterfly)
+(defn change-error [state]
+  (throw (Exception. "Boom!")))
+(send who-agent change-error)
+(= @who-agent :caterpillar)                                 ; state did not change
+(send who-agent change)                                     ; this throws an exception now
+(agent-error who-agent)
+; it will stay in broken state until we restart the agent
+(restart-agent who-agent :caterpillar)
+(send who-agent change)                                     ; it passes now
+(= @who-agent :chrysalis)
+;; when we don't want to break the state of the agent, but continue...
+(def who-agent (agent :caterpillar))
+(set-error-mode! who-agent :continue)
+(defn err-handler-fn [a ex]
+  (println "error" ex " value is " @a))
+(set-error-handler! who-agent err-handler-fn)
+; now sending the change-error will not break the state of the agent
+(defn change-error [state]
+  (throw (Exception. "Boom!")))
+(send who-agent change-error)
+(send who-agent change)                                     ; it still passes
+(= @who-agent :chrysalis)
+
+
+;; atom -> syncrhonous communication, not coordinated
+;; ref  -> synchronous communication, coordinated
+;; agent -> asynchronous communication, not coordinated
