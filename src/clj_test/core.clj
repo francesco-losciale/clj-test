@@ -368,3 +368,60 @@ print-nums                                                  ; only when evaluate
   (future (dotimes [_ n] (swap! counter inc-and-print)))
   )
 (= @counter 6)
+
+;transactions
+; we need to change two states in the same transaction
+(def alice-height (ref 3))                                  ; increases by 24
+(def right-hand-bites (ref 10))                             ; decreases
+(defn eat-from-right-hand []
+  (when (pos? @right-hand-bites)
+    (alter right-hand-bites dec)
+    (alter alice-height #(+ % 24))))
+; below: will throw an exception, it is not in a transaction
+(eat-from-right-hand)
+(dosync (eat-from-right-hand))
+; refactoring
+(def alice-height (ref 3))                                  ; increases by 24
+(def right-hand-bites (ref 10))                             ; decreases
+(defn eat-from-right-hand []
+  (dosync (when (pos? @right-hand-bites)
+     (alter right-hand-bites dec)
+     (alter alice-height #(+ % 24)))))
+; let's run 3 thread two times = height should be 147
+(let [n 2]
+  (future (dotimes [_ n] (eat-from-right-hand)))
+  (future (dotimes [_ n] (eat-from-right-hand)))
+  (future (dotimes [_ n] (eat-from-right-hand)))
+  )
+(= @alice-height 147)
+(= @right-hand-bites 4)
+; remember: alter! and swap! should NOT have side effects
+; below: commute, similar to alter, but without retry.
+(def alice-height (ref 3))                                  ; increases by 24
+(def right-hand-bites (ref 10))                             ; decreases
+(defn eat-from-right-hand []
+  (dosync (when (pos? @right-hand-bites)
+            (commute right-hand-bites dec)
+            (commute alice-height #(+ % 24)))))
+; let's run 3 thread two times = height should be 147
+(let [n 2]
+  (future (dotimes [_ n] (eat-from-right-hand)))
+  (future (dotimes [_ n] (eat-from-right-hand)))
+  (future (dotimes [_ n] (eat-from-right-hand)))
+  )
+(= @alice-height 147)
+(= @right-hand-bites 4)
+; ref-set , example : y = x + 2 always
+(def x (ref 1))
+(def y (ref 2))
+(defn new-values []
+  (dosync
+    (alter x inc)
+    (ref-set y (+ 2 @x))))
+(let [n 2]
+  (future (dotimes [_ n] (new-values)))
+  (future (dotimes [_ n] (new-values)))
+  )
+(= @x 5)
+(= @y 7)
+
