@@ -291,3 +291,34 @@ print-nums                                                  ; only when evaluate
 (= (reduce + [1 2 3]) 6)
 (= (reduce (fn [x y] (+ x y)) [1 2 3]) 6)
 (= (reduce (fn [x y] (if (even? y) (+ x y) y)) [1 2 3]) 3)
+
+; data transformation
+(= ((complement nil?) nil) (not (nil? nil)))
+(= ((complement nil?) 1) (not (nil? 1)))
+(= (filter (complement nil?) [nil :key :blah nil :bleah]) [:key :blah :bleah])
+(= (filter keyword? [nil :key :blah nil :bleah]) [:key :blah :bleah])
+(= (remove nil? [nil :key :blah nil :bleah]) [:key :blah :bleah])
+(= (for [animal [:cow :rabbit :dog]] (str (name animal))) '("cow" "rabbit" "dog"))
+(= (for [animal [:cow :rabbit :dog]
+         color ["red" "green" "blue"]] (str (name animal) " " (name color))) '("cow red" "cow green" "cow blue" "rabbit red" "rabbit green" "rabbit blue" "dog red" "dog green" "dog blue"))
+(= (for [animal [:cow :rabbit :dog]
+         color ["red" "green" "blue"]
+         :let [print-out (str (name animal) " " (name color))]]
+        print-out) '("cow red" "cow green" "cow blue" "rabbit red" "rabbit green" "rabbit blue" "dog red" "dog green" "dog blue"))
+(= (for [animal [:cow :rabbit :dog]
+         color ["red" "green" "blue"]
+         :let [print-out (str (name animal) " " (name color))]
+         :when (= animal :cow)]
+     print-out) '("cow red" "cow green" "cow blue"))
+(= (flatten [1 2 [3 4 [5]]]) [1 2 3 4 5])
+(= (flatten [1 2 [3 4 [5 {6 7}]]]) [1 2 3 4 5 {6 7}])
+(= (vec '(1 2 3)) [1 2 3])                                  ; from list to vector
+(= (into [] '(1 2 3)) [1 2 3])                              ; from list to vector
+(= (sorted-map :b 2 :a 1 :z 3) {:a 1 :b 2 :z 3})
+(= (into (sorted-map) {:b 2 :a 1 :z 3}) {:a 1 :b 2 :z 3})
+(= (into {} [[:b 2] [:a 1] [:z 3]]) {:a 1 :b 2 :z 3})
+(= (into [] {:a 1 :b 2 :z 3}) [[:a 1] [:b 2] [:z 3]])
+(= (partition 3 [1 2 3 4 5 6 7 8 9]) [[1 2 3] [4 5 6] [ 7 8 9]])
+(= (partition 3 [1 2 3 4 5 6 7 8 9 10]) [[1 2 3] [4 5 6] [ 7 8 9]]) ; ignore extra element (10)
+(= (partition-all 3 [1 2 3 4 5 6 7 8 9 10]) [[1 2 3] [4 5 6] [ 7 8 9] [10]]) ; ignore extra element (10)
+(= (partition-by #(= 6 %) [1 2 3 4 5 6 7 8 9]) [[1 2 3 4 5] [6] [7 8 9]])
