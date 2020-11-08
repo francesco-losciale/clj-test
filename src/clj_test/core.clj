@@ -483,3 +483,29 @@ print-nums                                                  ; only when evaluate
 (= (.toString sb) "Who are you?")
 (import 'java.util.UUID)
 (UUID/randomUUID)
+
+; polymorphism with multimethod
+; dispatcher method is `class`
+(defmulti who-are-you class)
+(defmethod who-are-you java.lang.String [input]
+  (str "String - who are you? " input))
+(defmethod who-are-you clojure.lang.Keyword [input]
+  (str "Keyword - who are you? " input))
+(defmethod who-are-you java.lang.Long [input]
+  (str "Long - who are you? " input))
+(= (who-are-you "Fran") "String - who are you? Fran")
+(= (who-are-you :fran) "Keyword - who are you? :fran")
+(= (who-are-you 1) "Long - who are you? 1")
+(= (who-are-you true))                                      ; IllegalArgumentException
+
+; use custom dispatch method
+(defmulti eat-mushroom (fn [height]
+                         (if (< height 3)
+                           :grow
+                           :shrink)))
+(defmethod eat-mushroom :grow [_]
+  "Eat the right side to grow.")
+(defmethod eat-mushroom :shrink [_]
+  "Eat the left side to grow.")
+(= (eat-mushroom 1) "Eat the right side to grow.")
+(= (eat-mushroom 5) "Eat the left side to grow.")
