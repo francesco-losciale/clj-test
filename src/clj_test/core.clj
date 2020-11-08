@@ -474,7 +474,8 @@ print-nums                                                  ; only when evaluate
 (= (new String "Hi") "Hi")
 (= (String. "Hi") "Hi")
 (ns clj-test.core
-  (:import (java.net InetAddress)))
+  (:import (java.net InetAddress)
+           (clj_test.core BigMushroom)))
 (= (.getHostName (InetAddress/getByName "localhost")) "localhost")
 (= (.getHostName (java.net.InetAddress/getByName "localhost")) "localhost")
 (def sb (doto (StringBuffer. "Who ")
@@ -509,3 +510,31 @@ print-nums                                                  ; only when evaluate
   "Eat the left side to grow.")
 (= (eat-mushroom 1) "Eat the right side to grow.")
 (= (eat-mushroom 5) "Eat the left side to grow.")
+
+; polymorphism with protocols
+(defprotocol BigMushroom
+  (eat-mushroom [this]))
+
+(extend-protocol BigMushroom
+  java.lang.String
+  (eat-mushroom [this]
+    (str (.toUpperCase this) " mmm tasty!"))
+
+  clojure.lang.Keyword
+  (eat-mushroom [this]
+    (case this
+      :grow "Eat the right side"
+      :shrink "Eat the left side"))
+
+  java.lang.Long
+  (eat-mushroom [this]
+    (if (< this 3)
+      "Eat the right side"
+      "Eat the left side"))
+)
+(= (eat-mushroom "wow!") "WOW! mmm tasty!")
+(= (eat-mushroom :grow) "Eat the right side")
+(= (eat-mushroom :shrink) "Eat the left side")
+
+
+
