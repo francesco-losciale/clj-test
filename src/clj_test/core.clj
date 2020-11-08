@@ -592,3 +592,13 @@ print-nums                                                  ; only when evaluate
 (bite-left-side reg-mushroom)
 
 
+(defn bite-right-side [mushroom]
+  (if (= (:type mushroom) "wonderland")
+    "The bite makes you grow bigger"
+    "The bite tastes bad"))
+(defn bite-left-side [mushroom]
+  (if (= (:type mushroom) "wonderland")
+    "The bite makes you grow smaller"
+    "The bite tastes bad"))
+(bite-right-side {:type "wonderland"})
+(bite-right-side {:type "regular"})
