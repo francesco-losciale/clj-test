@@ -475,7 +475,8 @@ print-nums                                                  ; only when evaluate
 (= (String. "Hi") "Hi")
 (ns clj-test.core
   (:import (java.net InetAddress)
-           (clj_test.core BigMushroom)))
+           (clj_test.core BigMushroom)
+           (sun.jvm.hotspot.ui EditableAtEndDocument)))
 (= (.getHostName (InetAddress/getByName "localhost")) "localhost")
 (= (.getHostName (java.net.InetAddress/getByName "localhost")) "localhost")
 (def sb (doto (StringBuffer. "Who ")
@@ -536,5 +537,58 @@ print-nums                                                  ; only when evaluate
 (= (eat-mushroom :grow) "Eat the right side")
 (= (eat-mushroom :shrink) "Eat the left side")
 
+; what if we need to use strucutred data? we can use defrecord
+(defrecord Mushroom [color height])
+(def regular-mushroom (Mushroom. "white and polka dots" "2 inches"))
+(= (class regular-mushroom) clj_test.core.Mushroom)
+(= (.-color regular-mushroom) "white and polka dots")
+(= (.-height regular-mushroom) "2 inches")
+
+; let's create a protocol Edible that will be extended by mushrooms records
+(defprotocol Edible
+  (bite-right-side [this])
+  (bite-left-side [this]))
+(defrecord WonderlandMushroom [color height]
+  Edible
+  (bite-left-side [this]
+    (str "The " color " bite makes you grow bigger"))
+  (bite-right-side [this]
+    (str "The " color " bite makes you grow smaller")))
+(defrecord RegularMushroom [color height]
+  Edible
+  (bite-left-side [this]
+    (str "The " color " bite taste bad"))
+  (bite-right-side [this]
+    (str "The " color " bite taste bad too")))
+(def alice-mushroom (WonderlandMushroom. "blue dots" "3 inches"))
+(def reg-mushroom (RegularMushroom. "brown" "1 inches"))
+(bite-right-side alice-mushroom)
+(bite-right-side reg-mushroom)
+(bite-left-side alice-mushroom)
+(bite-left-side reg-mushroom)
+
+
+; let's use deftype because we don't care about color and height anymore
+(defprotocol Edible
+  (bite-right-side [this])
+  (bite-left-side [this]))
+(deftype WonderlandMushroom []
+  Edible
+  (bite-right-side [this]
+    (str "The bite makes you grow bigger"))
+  (bite-left-side [this]
+    (str "The bite makes you grow smaller")))
+(deftype RegularMushroom []
+  Edible
+  (bite-right-side [this]
+    (str "The bite tastes bad"))
+  (bite-left-side [this]
+    (str "The bite tastes bad too")))
+(def alice-mushroom (WonderlandMushroom.))
+(def reg-mushroom (RegularMushroom.))
+(bite-right-side alice-mushroom)
+(bite-right-side reg-mushroom)
+(bite-left-side alice-mushroom)
+(bite-left-side reg-mushroom)
 
 
