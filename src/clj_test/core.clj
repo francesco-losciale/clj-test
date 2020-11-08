@@ -464,3 +464,22 @@ print-nums                                                  ; only when evaluate
 ;; atom -> syncrhonous communication, not coordinated
 ;; ref  -> synchronous communication, coordinated
 ;; agent -> asynchronous communication, not coordinated
+
+
+; java interoperability
+(= (class "caterpillar") String)
+(= (. "caterpillar" toUpperCase) "CATERPILLAR")
+(= (.toUpperCase "caterpillar") "CATERPILLAR")
+(= (.indexOf "caterpillar" "pillar") 5)
+(= (new String "Hi") "Hi")
+(= (String. "Hi") "Hi")
+(ns clj-test.core
+  (:import (java.net InetAddress)))
+(= (.getHostName (InetAddress/getByName "localhost")) "localhost")
+(= (.getHostName (java.net.InetAddress/getByName "localhost")) "localhost")
+(def sb (doto (StringBuffer. "Who ")
+   (.append "are ")
+   (.append "you?")))
+(= (.toString sb) "Who are you?")
+(import 'java.util.UUID)
+(UUID/randomUUID)
