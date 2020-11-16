@@ -19,6 +19,31 @@
 (defn dup-elem [s]
   (apply concat (map (partial repeat 2) s)))
 
+;; rabbit hole here during exercise "Compress a Sequence".....
+(reduce
+  (fn [acc r]
+   (if (= (last (str acc)) r)
+     acc
+     (str acc r)))
+ "Leeeroy")
+;; also
+(reduce
+  (fn [acc r]
+    (prn "acc::" acc ", r::" r ", last acc::" (last acc))
+    (if (= (last acc) r)
+      acc
+      (str acc r)))
+  ""
+  "Leeeroy")
+;; real solution is
+#(map first (partition-by identity %))
+
+(defn drop-every-nth [l i]
+  (vec (flatten (map (partial take (dec i)) (partition-all i l)))))
+
+(defn replicate-n-times [l n]
+  (apply concat (map (partial repeat n) l)))
+
 
 (defn function-in-library [param1]
   (str "Hello" param1))
