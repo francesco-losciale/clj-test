@@ -700,3 +700,40 @@ print-nums                                                  ; only when evaluate
 (= (factorial 8) 40320)
 
 (= [2 4] (let [[a b c d e] [0 1 2 3 4]] [c e]))
+(= [1 2 [3 4 5] [1 2 3 4 5]] (let [[a b & c :as d] [1 2 3 4 5]] [a b c d]))
+
+;(defn xor
+;  ([a b] (= (count (filter true? [a b])) 1)))
+;
+;(defn not-all-true? [& all]
+;  (reduce xor all))
+
+(defn not-all-true? [& all]
+  (true? (and (some true? all) (some false? all))))
+
+(= false (not-all-true? false false))
+(= true (not-all-true? true false))
+(= false (not-all-true? true))
+(= true (not-all-true? false true false))
+(= false (not-all-true? true true true))
+(= true (not-all-true? true true true false))
+
+(defn multipliers [x n]
+  (lazy-seq (cons (* x n) (multipliers x (inc n)))))
+
+(defn lcm [a b]
+  (apply min (clojure.set/intersection
+     (set (take 100 (multipliers a 1)))
+     (set (take 100 (multipliers b 1)))
+     )))
+
+(defn abs [n]
+  (max n (- n)))
+
+(defn gcd [a b]
+  (/ (abs (* a b)) (lcm a b)))
+
+(= (gcd 2 4) 2)
+(= (gcd 10 5) 5)
+(= (gcd 5 7) 1)
+(= (gcd 1023 858) 33)
