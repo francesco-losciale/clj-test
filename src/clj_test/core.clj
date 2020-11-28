@@ -602,3 +602,100 @@ print-nums                                                  ; only when evaluate
     "The bite tastes bad"))
 (bite-right-side {:type "wonderland"})
 (bite-right-side {:type "regular"})
+
+
+
+
+
+;;;;; other tests from 4clojure
+
+(def arr '(1 2 3 4))
+
+(defn penultimate [s]
+  (nth (reverse s) 1))
+
+(defn sum-all-seq [s]
+  (reduce + s))
+
+(defn filter-even [s]
+  (filter even? s))
+
+(defn palindrome [s]
+  (= s (if (= (class s) java.lang.String)
+         (clojure.string/reverse s)
+         (reverse s))))
+
+(defn dup-elem [s]
+  (apply concat (map (partial repeat 2) s)))
+
+;; rabbit hole here during exercise "Compress a Sequence".....
+(reduce
+  (fn [acc r]
+    (if (= (last (str acc)) r)
+      acc
+      (str acc r)))
+  "Leeeroy")
+;; also
+(reduce
+  (fn [acc r]
+    (prn "acc::" acc ", r::" r ", last acc::" (last acc))
+    (if (= (last acc) r)
+      acc
+      (str acc r)))
+  ""
+  "Leeeroy")
+;; real solution is
+#(map first (partition-by identity %))
+
+(defn drop-every-nth [l i]
+  (vec (flatten (map (partial take (dec i)) (partition-all i l)))))
+
+(defn replicate-n-times [l n]
+  (apply concat (map (partial repeat n) l)))
+
+;(defn fibonacci [s m]
+;  (if (< (count s) m)
+;    (case (count s)
+;      0 (fibonacci [0] m)
+;      1 (fibonacci [0 1] m)
+;      (fibonacci
+;       (conj s (+ (nth s (dec (dec (count s)))) (last s)))
+;       m))
+;    s))
+;
+;(defn fibonacci [s]
+;  (case s
+;    [] (fibonacci [0])
+;    [0] (fibonacci [0 1])
+;    (lazy-seq (fibonacci
+;       (conj s (+ (nth s (dec (dec (count s)))) (last s)))))))
+
+(defn fibonacci
+  ([] (fibonacci 0 1))
+  ([a b] (lazy-seq (cons a (fibonacci b (+ a b))))))
+
+
+(= (take 3 (fibonacci)) '(0 1 1))
+(= (take 6 (fibonacci)) '(0 1 1 2 3 5))
+(= (take 8 (fibonacci)) '(0 1 1 2 3 5 8 13))
+
+(defn caps [s]
+  (apply str (filter #(Character/isUpperCase %) s)))
+(= (caps "HeLlO, WoRlD!") "HLOWRD")
+
+(= 6 (some #{2 7 6} [5 6 7 8]))
+(= 6 (some #(when (even? %) %) [5 6 7 8]))
+
+
+;In mathematics, the factorial of a positive integer n, denoted by n!,
+; is the product of all positive integers less than or equal to n
+(defn factorial [n]
+  (if (> n 1)
+    (* n (factorial (dec n)))
+    1))
+
+(= (factorial 1) 1)
+(= (factorial 3) 6)
+(= (factorial 5) 120)
+(= (factorial 8) 40320)
+

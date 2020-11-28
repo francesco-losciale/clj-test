@@ -44,6 +44,16 @@
 (defn replicate-n-times [l n]
   (apply concat (map (partial repeat n) l)))
 
+(defn fibonacci [s m]
+  (if (= (count s) m)
+    s
+    (conj s (+ (nth s (dec (dec (count s)))) (last s)))
+    ))
+
+(= (fibonacci 3) '(0 1 1))
+(= (fibonacci 6) '(0 1 1 2 3 5))
+(= (fibonacci 8) '(0 1 1 2 3 5 8 13))
+
 
 (defn function-in-library [param1]
   (str "Hello" param1))
