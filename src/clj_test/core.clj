@@ -474,6 +474,7 @@ print-nums                                                  ; only when evaluate
 (= (new String "Hi") "Hi")
 (= (String. "Hi") "Hi")
 (ns clj-test.core
+  (:require [clojure.set :as set])
   (:import (java.net InetAddress)
            (clj_test.core BigMushroom)
            (sun.jvm.hotspot.ui EditableAtEndDocument)))
@@ -759,23 +760,31 @@ print-nums                                                  ; only when evaluate
 
 ; Write a function which calculates the Cartesian product of two sets.
 
-(defn mul [x l]
-  (if (not (empty? (rest l)))
-    (conj [] (conj [] x (first l)) (mul x (rest l)))
-    (conj [] (conj [] x (first l)))))
+;(defn mul [x l]
+;  (if (not (empty? (rest l)))
+;    (conj [] (conj [] x (first l)) (mul x (rest l)))
+;    (conj [] (conj [] x (first l)))))
+;
+;(defn cart-prod [s1 s2]
+;  (for [el (into [] s1)]
+;    (mul el (into [] s2))))
+;
+;(defn cart-prod [s1 s2]
+;  (for [l (into [] s1)]
+;    (for [r (into [] s2)]
+;      [l r])))
 
 (defn cart-prod [s1 s2]
-  (for [el (into [] s1)]
-    (mul el (into [] s2))))
-
+  (into #{}
+        (for [x s1 y s2] (vector x y))))
 
 (= (cart-prod #{"ace" "king" "queen"} #{"♠" "♥" "♦" "♣"})
    #{["ace"   "♠"] ["ace"   "♥"] ["ace"   "♦"] ["ace"   "♣"]
      ["king"  "♠"] ["king"  "♥"] ["king"  "♦"] ["king"  "♣"]
      ["queen" "♠"] ["queen" "♥"] ["queen" "♦"] ["queen" "♣"]})
 
-(= (__ #{1 2 3} #{4 5})
+(= (cart-prod #{1 2 3} #{4 5})
    #{[1 4] [2 4] [3 4] [1 5] [2 5] [3 5]})
 
-(= 300 (count (__ (into #{} (range 10))
+(= 300 (count (cart-prod (into #{} (range 10))
                   (into #{} (range 30)))))
