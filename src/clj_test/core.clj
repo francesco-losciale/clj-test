@@ -788,3 +788,19 @@ print-nums                                                  ; only when evaluate
 
 (= 300 (count (cart-prod (into #{} (range 10))
                   (into #{} (range 30)))))
+
+; Write a function which returns the symmetric difference of two sets.
+; The symmetric difference is the set of items belonging to one but not
+; both of the two sets.
+
+(defn symm-diff [s1 s2]
+  (clojure.set/union
+    (clojure.set/difference s1 (clojure.set/intersection s1 s2))
+    (clojure.set/difference s2 (clojure.set/intersection s1 s2))))
+
+(= (symm-diff #{1 2 3 4 5 6} #{1 3 5 7}) #{2 4 6 7})
+(= (symm-diff #{:a :b :c} #{}) #{:a :b :c})
+(= (symm-diff #{} #{4 5 6}) #{4 5 6})
+(= (symm-diff #{[1 2] [2 3]} #{[2 3] [3 4]}) #{[1 2] [3 4]})
+
+
