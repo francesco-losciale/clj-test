@@ -205,7 +205,7 @@
 ; destructuring
 ; vectors
 (defn print-name [] (let [[name surname] ["Francesco" "Losciale"]]
-   (str name " " surname)))
+                      (str name " " surname)))
 (= (print-name) "Francesco Losciale")
 ; vectors using :as
 (defn print-name [] (let [[name surname :as name-and-surname] ["Francesco" "Losciale"]]
@@ -228,9 +228,9 @@
                       (str name " " surname)))
 (= (print-name) "Francesco Losciale")
 ; destructuring on function parameter
-(defn print-details[person] (str (:name person) " " (:surname person)))
+(defn print-details [person] (str (:name person) " " (:surname person)))
 (= (print-details {:name "Francesco" :surname "Losciale"}))
-(defn print-details[{:keys [name surname]}] (str name " " surname))
+(defn print-details [{:keys [name surname]}] (str name " " surname))
 (= (print-details {:name "Francesco" :surname "Losciale"}))
 
 ; lazy sequence
@@ -261,9 +261,9 @@
 (defn alice-is [adjs]
   (loop [input adjs
          result []] (if (empty? input)
-     result
-     (recur (rest input) (conj result (str "Alice is " (first input))))
-     )))
+                      result
+                      (recur (rest input) (conj result (str "Alice is " (first input))))
+                      )))
 (= (alice-is adjs) expected-result)
 
 ; map
@@ -304,7 +304,7 @@ print-nums                                                  ; only when evaluate
 (= (for [animal [:cow :rabbit :dog]
          color ["red" "green" "blue"]
          :let [print-out (str (name animal) " " (name color))]]
-        print-out) '("cow red" "cow green" "cow blue" "rabbit red" "rabbit green" "rabbit blue" "dog red" "dog green" "dog blue"))
+     print-out) '("cow red" "cow green" "cow blue" "rabbit red" "rabbit green" "rabbit blue" "dog red" "dog green" "dog blue"))
 (= (for [animal [:cow :rabbit :dog]
          color ["red" "green" "blue"]
          :let [print-out (str (name animal) " " (name color))]
@@ -318,9 +318,9 @@ print-nums                                                  ; only when evaluate
 (= (into (sorted-map) {:b 2 :a 1 :z 3}) {:a 1 :b 2 :z 3})
 (= (into {} [[:b 2] [:a 1] [:z 3]]) {:a 1 :b 2 :z 3})
 (= (into [] {:a 1 :b 2 :z 3}) [[:a 1] [:b 2] [:z 3]])
-(= (partition 3 [1 2 3 4 5 6 7 8 9]) [[1 2 3] [4 5 6] [ 7 8 9]])
-(= (partition 3 [1 2 3 4 5 6 7 8 9 10]) [[1 2 3] [4 5 6] [ 7 8 9]]) ; ignore extra element (10)
-(= (partition-all 3 [1 2 3 4 5 6 7 8 9 10]) [[1 2 3] [4 5 6] [ 7 8 9] [10]]) ; ignore extra element (10)
+(= (partition 3 [1 2 3 4 5 6 7 8 9]) [[1 2 3] [4 5 6] [7 8 9]])
+(= (partition 3 [1 2 3 4 5 6 7 8 9 10]) [[1 2 3] [4 5 6] [7 8 9]]) ; ignore extra element (10)
+(= (partition-all 3 [1 2 3 4 5 6 7 8 9 10]) [[1 2 3] [4 5 6] [7 8 9] [10]]) ; ignore extra element (10)
 (= (partition-by #(= 6 %) [1 2 3 4 5 6 7 8 9]) [[1 2 3 4 5] [6] [7 8 9]])
 
 ; state management (idiomatic to use ! for impure functions)
@@ -385,8 +385,8 @@ print-nums                                                  ; only when evaluate
 (def right-hand-bites (ref 10))                             ; decreases
 (defn eat-from-right-hand []
   (dosync (when (pos? @right-hand-bites)
-     (alter right-hand-bites dec)
-     (alter alice-height #(+ % 24)))))
+            (alter right-hand-bites dec)
+            (alter alice-height #(+ % 24)))))
 ; let's run 3 thread two times = height should be 147
 (let [n 2]
   (future (dotimes [_ n] (eat-from-right-hand)))
@@ -480,8 +480,8 @@ print-nums                                                  ; only when evaluate
 (= (.getHostName (InetAddress/getByName "localhost")) "localhost")
 (= (.getHostName (java.net.InetAddress/getByName "localhost")) "localhost")
 (def sb (doto (StringBuffer. "Who ")
-   (.append "are ")
-   (.append "you?")))
+          (.append "are ")
+          (.append "you?")))
 (= (.toString sb) "Who are you?")
 (import 'java.util.UUID)
 (UUID/randomUUID)
@@ -532,7 +532,7 @@ print-nums                                                  ; only when evaluate
     (if (< this 3)
       "Eat the right side"
       "Eat the left side"))
-)
+  )
 (= (eat-mushroom "wow!") "WOW! mmm tasty!")
 (= (eat-mushroom :grow) "Eat the right side")
 (= (eat-mushroom :shrink) "Eat the left side")
@@ -723,9 +723,9 @@ print-nums                                                  ; only when evaluate
 
 (defn lcm [a b]
   (apply min (clojure.set/intersection
-     (set (take 100 (multipliers a 1)))
-     (set (take 100 (multipliers b 1)))
-     )))
+               (set (take 100 (multipliers a 1)))
+               (set (take 100 (multipliers b 1)))
+               )))
 
 (defn abs [n]
   (max n (- n)))
@@ -737,3 +737,45 @@ print-nums                                                  ; only when evaluate
 (= (gcd 10 5) 5)
 (= (gcd 5 7) 1)
 (= (gcd 1023 858) 33)
+
+
+
+; Given a positive integer n, return a function (f x) which computes x^n.
+; Observe that the effect of this is to preserve the value of n for use
+; outside the scope in which it is defined.
+
+(defn pow-n [n]
+  (let [pow (fn pow [x n]
+              (if (> n 0)
+                (* x (pow x (dec n)))
+                1))]
+    (fn [x] (pow x n))))
+
+(= 256 ((pow-n 2) 16), ((pow-n 8) 2))
+(= [1 8 27 64] (map (pow-n 3) [1 2 3 4]))
+(= [1 2 4 8 16] (map #((pow-n %) 2) [0 1 2 3 4]))
+
+
+
+; Write a function which calculates the Cartesian product of two sets.
+
+(defn mul [x l]
+  (if (not (empty? (rest l)))
+    (conj [] (conj [] x (first l)) (mul x (rest l)))
+    (conj [] (conj [] x (first l)))))
+
+(defn cart-prod [s1 s2]
+  (for [el (into [] s1)]
+    (mul el (into [] s2))))
+
+
+(= (cart-prod #{"ace" "king" "queen"} #{"♠" "♥" "♦" "♣"})
+   #{["ace"   "♠"] ["ace"   "♥"] ["ace"   "♦"] ["ace"   "♣"]
+     ["king"  "♠"] ["king"  "♥"] ["king"  "♦"] ["king"  "♣"]
+     ["queen" "♠"] ["queen" "♥"] ["queen" "♦"] ["queen" "♣"]})
+
+(= (__ #{1 2 3} #{4 5})
+   #{[1 4] [2 4] [3 4] [1 5] [2 5] [3 5]})
+
+(= 300 (count (__ (into #{} (range 10))
+                  (into #{} (range 30)))))
