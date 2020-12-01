@@ -820,6 +820,19 @@ print-nums                                                  ; only when evaluate
   )
 
 
+(defn abs [n]
+  (max n (- n)))
+
+(defn gcd [a b]
+  (if (zero? b)
+    a
+    (gcd b (mod a b))))
+
+(defn lcm
+  ([a b] (/ (abs (* a b)) (gcd a b)))
+  ([a b & args] (lcm a (lcm b (reduce lcm args)))))
+
+
 (== (lcm 2 3) 6)
 (== (lcm 5 3 7) 105)
 (== (lcm 1/3 2/5) 2)
