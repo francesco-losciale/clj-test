@@ -804,3 +804,34 @@ print-nums                                                  ; only when evaluate
 (= (symm-diff #{[1 2] [2 3]} #{[2 3] [3 4]}) #{[1 2] [3 4]})
 
 
+(defn multipliers [x n]
+  (lazy-seq (cons (* x n) (multipliers x (inc n)))))
+
+(defn lcm
+  ([] 100)
+  ([a b]
+       (apply min (clojure.set/intersection
+                    (set (take 100 (multipliers a 1)))
+                    (set (take 100 (multipliers b 1))))
+              ))
+  ([a b c]
+       (apply min (clojure.set/intersection
+                    (set (take 100 (multipliers a 1)))
+                    (set (take 100 (multipliers b 1)))
+                    (set (take 100 (multipliers c 1)))
+                    )
+              ))
+  ([a b c d]
+   (apply min (clojure.set/intersection
+                (set (take 1000 (multipliers a 1)))
+                (set (take 1000 (multipliers b 1)))
+                (set (take 1000 (multipliers c 1)))
+                (set (take 1000 (multipliers d 1)))
+                )
+          )))
+
+(== (lcm 2 3) 6)
+(== (lcm 5 3 7) 105)
+(== (lcm 1/3 2/5) 2)
+(== (lcm 7 5/7 2 3/5) 210)
+(== (lcm 3/4 1/6) 3/2)
