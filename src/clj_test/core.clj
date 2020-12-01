@@ -779,15 +779,15 @@ print-nums                                                  ; only when evaluate
         (for [x s1 y s2] (vector x y))))
 
 (= (cart-prod #{"ace" "king" "queen"} #{"♠" "♥" "♦" "♣"})
-   #{["ace"   "♠"] ["ace"   "♥"] ["ace"   "♦"] ["ace"   "♣"]
-     ["king"  "♠"] ["king"  "♥"] ["king"  "♦"] ["king"  "♣"]
+   #{["ace" "♠"] ["ace" "♥"] ["ace" "♦"] ["ace" "♣"]
+     ["king" "♠"] ["king" "♥"] ["king" "♦"] ["king" "♣"]
      ["queen" "♠"] ["queen" "♥"] ["queen" "♦"] ["queen" "♣"]})
 
 (= (cart-prod #{1 2 3} #{4 5})
    #{[1 4] [2 4] [3 4] [1 5] [2 5] [3 5]})
 
 (= 300 (count (cart-prod (into #{} (range 10))
-                  (into #{} (range 30)))))
+                         (into #{} (range 30)))))
 
 ; Write a function which returns the symmetric difference of two sets.
 ; The symmetric difference is the set of items belonging to one but not
@@ -810,25 +810,11 @@ print-nums                                                  ; only when evaluate
 (defn lcm
   ([] 100)
   ([a b]
-       (apply min (clojure.set/intersection
-                    (set (take 100 (multipliers a 1)))
-                    (set (take 100 (multipliers b 1))))
-              ))
-  ([a b c]
-       (apply min (clojure.set/intersection
-                    (set (take 100 (multipliers a 1)))
-                    (set (take 100 (multipliers b 1)))
-                    (set (take 100 (multipliers c 1)))
-                    )
-              ))
-  ([a b c d]
    (apply min (clojure.set/intersection
                 (set (take 1000 (multipliers a 1)))
-                (set (take 1000 (multipliers b 1)))
-                (set (take 1000 (multipliers c 1)))
-                (set (take 1000 (multipliers d 1)))
-                )
-          )))
+                (set (take 1000 (multipliers b 1))))))
+  ([a b c] (lcm (lcm a b) c))
+  ([a b c d] (lcm (lcm (lcm a b) c) d)))
 
 (== (lcm 2 3) 6)
 (== (lcm 5 3 7) 105)
