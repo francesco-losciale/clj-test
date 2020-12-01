@@ -807,14 +807,18 @@ print-nums                                                  ; only when evaluate
 (defn multipliers [x n]
   (lazy-seq (cons (* x n) (multipliers x (inc n)))))
 
-(defn lcm
-  ([] 100)
-  ([a b]
-   (apply min (clojure.set/intersection
-                (set (take 1000 (multipliers a 1)))
-                (set (take 1000 (multipliers b 1))))))
-  ([a b & args]
-   (lcm b (lcm a (reduce lcm args)))))
+(defn lcm [& args]
+  (let [multipliers
+        (fn [x n]
+          (lazy-seq (cons (* x n) (multipliers x (inc n)))))
+        find-common-min-multiplier
+        (fn [a b]
+          (apply min (clojure.set/intersection
+                       (set (take 1000 (multipliers a 1)))
+                       (set (take 1000 (multipliers b 1))))))]
+    (reduce find-common-min-multiplier args))
+  )
+
 
 (== (lcm 2 3) 6)
 (== (lcm 5 3 7) 105)
