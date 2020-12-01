@@ -813,8 +813,8 @@ print-nums                                                  ; only when evaluate
    (apply min (clojure.set/intersection
                 (set (take 1000 (multipliers a 1)))
                 (set (take 1000 (multipliers b 1))))))
-  ([a b c] (lcm (lcm a b) c))
-  ([a b c d] (lcm (lcm (lcm a b) c) d)))
+  ([a b & args]
+   (lcm b (lcm a (reduce lcm args)))))
 
 (== (lcm 2 3) 6)
 (== (lcm 5 3 7) 105)
