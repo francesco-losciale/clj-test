@@ -838,3 +838,32 @@ print-nums                                                  ; only when evaluate
 (== (lcm 1/3 2/5) 2)
 (== (lcm 7 5/7 2 3/5) 210)
 (== (lcm 3/4 1/6) 3/2)
+
+
+
+;The triangle, actually, is a square matrix (T) where each element
+; can be obtained, among others, in the following way, where L is the
+; row index and C, the column index:
+;
+;T(L,C) = 1, se C = 0 ou L = C
+;T(L,C) = T(L-1,C) + T(L-1,C-1), se L >= C  (Stifel's Relation)
+;(With L >= 0 and C >= 0)
+
+(defn calc [r c]
+  (if (or (= c 0) (= r c))
+    1
+    (+ (calc (- r 1) c) (calc (- r 1) (- c 1)))))
+
+(defn pascal-triangle [n]
+  (for [c (range 0 3)]
+    (conj [] (calc n c))))
+
+(= (pascal-triangle 1) [1])
+(= (map pascal-triangle (range 1 6))
+   [     [1]
+    [1 1]
+    [1 2 1]
+    [1 3 3 1]
+    [1 4 6 4 1]])
+(= (pascal-triangle 11)
+   [1 10 45 120 210 252 210 120 45 10 1])
