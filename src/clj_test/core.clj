@@ -867,3 +867,38 @@ print-nums                                                  ; only when evaluate
     [1 4 6 4 1]])
 (= (pascal-triangle 11)
    [1 10 45 120 210 252 210 120 45 10 1])
+
+
+
+(defn is-btree? [b [l r]]
+  (or
+    (and
+     (not (nil? b))
+     (not (nil? l))
+     (not (nil? r))
+     ;(is-btree? l)
+     ;(is-btree? r)
+     )
+    false)
+    )
+
+(is-btree? [1 [1 1]])
+
+
+(defn is-btree? [s]
+  (if (or (not (vector? s)) (= (count s) 1))
+    true
+    (if (= (count s) 2)
+     false
+     (and
+       (is-btree? (nth s 1))
+       (is-btree? (nth s 2))
+       ))))
+
+(is-btree? [1])
+(is-btree? [1 1])
+(is-btree? [1 1 1])
+(is-btree? [1 1 [1 1]])
+
+(= (is-btree? '(:a (:b nil nil) nil))
+   true)
