@@ -886,19 +886,16 @@ print-nums                                                  ; only when evaluate
 
 
 (defn is-btree? [s]
-  (if (or (not (vector? s)) (= (count s) 1))
-    true
-    (if (or (= (count s) 2) (> (count s) 3))
+  (if (or (and (not (vector? s)) (not (list? s))) (= (count s) 1))
+    (nil? s)
+    (if (or (= (count s) 0) (= (count s) 2) (> (count s) 3))
      false
      (and
        (is-btree? (nth s 1))
        (is-btree? (nth s 2))
        ))))
 
-(is-btree? [1])
-(is-btree? [1 1])
-(is-btree? [1 1 1])
-(is-btree? [1 1 [1 1]])
+
 (= (is-btree? [1 [2 [3 [4 nil nil] nil] nil] nil]) true)
 (= (is-btree? [1 [2 nil nil] [3 nil nil] [4 nil nil]]) false)
 (= (is-btree? [1 nil [2 [3 nil nil] [4 nil nil]]]) true)
