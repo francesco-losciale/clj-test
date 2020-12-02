@@ -850,12 +850,12 @@ print-nums                                                  ; only when evaluate
 ;(With L >= 0 and C >= 0)
 
 (defn calc [r c]
-  (if (or (= c 0) (= r c))
+  (if (or (= c 1) (= r c))
     1
     (+ (calc (- r 1) c) (calc (- r 1) (- c 1)))))
 
 (defn pascal-triangle [n]
-  (into [] (for [c (range 0 (inc n))]
+  (into [] (for [c (range 1 (+ n 1))]
              (calc n c))))
 
 (= (pascal-triangle 1) [1])
