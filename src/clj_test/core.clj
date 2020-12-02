@@ -855,8 +855,8 @@ print-nums                                                  ; only when evaluate
     (+ (calc (- r 1) c) (calc (- r 1) (- c 1)))))
 
 (defn pascal-triangle [n]
-  (for [c (range 0 3)]
-    (conj [] (calc n c))))
+  (into [] (for [c (range 0 (inc n))]
+             (calc n c))))
 
 (= (pascal-triangle 1) [1])
 (= (map pascal-triangle (range 1 6))
