@@ -860,7 +860,7 @@ print-nums                                                  ; only when evaluate
 
 (= (pascal-triangle 1) [1])
 (= (map pascal-triangle (range 1 6))
-   [     [1]
+   [[1]
     [1 1]
     [1 2 1]
     [1 3 3 1]
@@ -873,29 +873,30 @@ print-nums                                                  ; only when evaluate
 (defn is-btree? [b [l r]]
   (or
     (and
-     (not (nil? b))
-     (not (nil? l))
-     (not (nil? r))
-     ;(is-btree? l)
-     ;(is-btree? r)
-     )
+      (not (nil? b))
+      (not (nil? l))
+      (not (nil? r))
+      ;(is-btree? l)
+      ;(is-btree? r)
+      )
     false)
-    )
+  )
 
 (is-btree? [1 [1 1]])
 
-
 (defn is-btree? [s]
-  (let [is-not-seq? #(and (not (vector? %)) (not (list? %)))
-        is-count? #(= (count %2) %1)]
-   (if (or (is-not-seq? s) (is-count? 1 s))
-     (nil? s)
-     (if (or (is-count? 0 s) (is-count? 2 s) (> (count s) 3))
-       false
-       (and
-         (is-btree? (nth s 1))
-         (is-btree? (nth s 2))
-         )))))
+  (let [is-seq? #(and (not (empty? %)) (or (vector? %) (list? %)))]
+    (if (and (is-seq? s) (= (count s) 3))
+      (if (every? nil? [(nth s 1) (nth s 2)])
+        true
+        (and
+          (not-any? false? [(nth s 1) (nth s 2)])
+          (is-btree? (nth s 1))
+          (is-btree? (nth s 2))))
+      (nil? s))
+    )
+  )
+
 (= (is-btree? [1 [2 [3 [4 nil nil] nil] nil] nil]) true)
 (= (is-btree? [1 [2 nil nil] [3 nil nil] [4 nil nil]]) false)
 (= (is-btree? [1 nil [2 [3 nil nil] [4 nil nil]]]) true)
@@ -920,11 +921,11 @@ print-nums                                                  ; only when evaluate
 (= (is-symmetric? '(:a (:b nil nil) nil)) false)
 (= (is-symmetric? '(:a (:b nil nil) (:c nil nil))) false)
 (= (is-symmetric? [1 [2 nil [3 [4 [5 nil nil] [6 nil nil]] nil]]
-        [2 [3 nil [4 [6 nil nil] [5 nil nil]]] nil]])
+                   [2 [3 nil [4 [6 nil nil] [5 nil nil]]] nil]])
    true)
 (= (is-symmetric? [1 [2 nil [3 [4 [5 nil nil] [6 nil nil]] nil]]
-        [2 [3 nil [4 [5 nil nil] [6 nil nil]]] nil]])
+                   [2 [3 nil [4 [5 nil nil] [6 nil nil]]] nil]])
    false)
 (= (is-symmetric? [1 [2 nil [3 [4 [5 nil nil] [6 nil nil]] nil]]
-        [2 [3 nil [4 [5 nil nil] [6 nil nil]]] nil]])
+                   [2 [3 nil [4 [5 nil nil] [6 nil nil]]] nil]])
    false)
