@@ -905,15 +905,20 @@ print-nums                                                  ; only when evaluate
 (= (is-btree? '(:a nil ())) false)
 
 
+(defn are-symmetric-trees? [l r]
+  (if (or
+        (= nil l r)
+        (and (= (first l) (first r))
+            (are-symmetric-trees? (second l) (last r))
+            (are-symmetric-trees? (last l) (second r))))
+    true
+    false)
+  )
 (defn is-symmetric? [t]
-  (comment
-    (def t '(:a (:b nil nil) nil)))
   (if (and (not (empty? t)) (is-btree? t))
-    (if (= (count (filter nil? [(nth t 1) (nth t 2)])) 1)
-      false
-      (and (is-symmetric? (nth t 1)) (is-symmetric? (nth t 2)))
-      )
-    (nil? t)))
+    (are-symmetric-trees? (second t) (last t))
+    false))
+
 (= (is-symmetric? '()) false)
 (= (is-symmetric? '(:a)) false)
 (= (is-symmetric? '(:a (:b nil nil) (:b nil nil))) true)
