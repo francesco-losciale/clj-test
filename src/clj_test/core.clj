@@ -882,55 +882,55 @@ print-nums                                                  ; only when evaluate
     false)
   )
 
-(is-btree? [1 [1 1]])
+(binary-tree? [1 [1 1]])
 
-(defn is-btree? [s]
+(defn binary-tree? [s]
   (let [is-seq? #(and (not (empty? %)) (or (vector? %) (list? %)))]
     (if (and (is-seq? s) (= (count s) 3))
       (if (every? nil? [(nth s 1) (nth s 2)])
         true
         (and
           (not-any? false? [(nth s 1) (nth s 2)])
-          (is-btree? (nth s 1))
-          (is-btree? (nth s 2))))
+          (binary-tree? (nth s 1))
+          (binary-tree? (nth s 2))))
       (nil? s))
     )
   )
 
-(= (is-btree? [1 [2 [3 [4 nil nil] nil] nil] nil]) true)
-(= (is-btree? [1 [2 nil nil] [3 nil nil] [4 nil nil]]) false)
-(= (is-btree? [1 nil [2 [3 nil nil] [4 nil nil]]]) true)
-(= (is-btree? '(:a (:b nil nil) nil)) true)
-(= (is-btree? [1 [2 [3 [4 false nil] nil] nil] nil]) false)
-(= (is-btree? '(:a nil ())) false)
+(= (binary-tree? [1 [2 [3 [4 nil nil] nil] nil] nil]) true)
+(= (binary-tree? [1 [2 nil nil] [3 nil nil] [4 nil nil]]) false)
+(= (binary-tree? [1 nil [2 [3 nil nil] [4 nil nil]]]) true)
+(= (binary-tree? '(:a (:b nil nil) nil)) true)
+(= (binary-tree? [1 [2 [3 [4 false nil] nil] nil] nil]) false)
+(= (binary-tree? '(:a nil ())) false)
 
 
-(defn are-symmetric-trees? [l r]
+(defn symmetric-trees? [l r]
   (if (or
         (= nil l r)
         (and (= (first l) (first r))
-            (are-symmetric-trees? (second l) (last r))
-            (are-symmetric-trees? (last l) (second r))))
+             (symmetric-trees? (second l) (last r))
+             (symmetric-trees? (last l) (second r))))
     true
     false)
   )
-(defn is-symmetric? [t]
-  (if (and (not (empty? t)) (is-btree? t))
-    (are-symmetric-trees? (second t) (last t))
+(defn symmetric-tree? [t]
+  (if (and (not (empty? t)) (binary-tree? t))
+    (symmetric-trees? (second t) (last t))
     false))
 
-(= (is-symmetric? '()) false)
-(= (is-symmetric? '(:a)) false)
-(= (is-symmetric? '(:a (:b nil nil) (:b nil nil))) true)
-(= (is-symmetric? '(:a nil nil)) true)
-(= (is-symmetric? '(:a (:b nil nil) nil)) false)
-(= (is-symmetric? '(:a (:b nil nil) (:c nil nil))) false)
-(= (is-symmetric? [1 [2 nil [3 [4 [5 nil nil] [6 nil nil]] nil]]
+(= (symmetric-tree? '()) false)
+(= (symmetric-tree? '(:a)) false)
+(= (symmetric-tree? '(:a (:b nil nil) (:b nil nil))) true)
+(= (symmetric-tree? '(:a nil nil)) true)
+(= (symmetric-tree? '(:a (:b nil nil) nil)) false)
+(= (symmetric-tree? '(:a (:b nil nil) (:c nil nil))) false)
+(= (symmetric-tree? [1 [2 nil [3 [4 [5 nil nil] [6 nil nil]] nil]]
                    [2 [3 nil [4 [6 nil nil] [5 nil nil]]] nil]])
    true)
-(= (is-symmetric? [1 [2 nil [3 [4 [5 nil nil] [6 nil nil]] nil]]
+(= (symmetric-tree? [1 [2 nil [3 [4 [5 nil nil] [6 nil nil]] nil]]
                    [2 [3 nil [4 [5 nil nil] [6 nil nil]]] nil]])
    false)
-(= (is-symmetric? [1 [2 nil [3 [4 [5 nil nil] [6 nil nil]] nil]]
+(= (symmetric-tree? [1 [2 nil [3 [4 [5 nil nil] [6 nil nil]] nil]]
                    [2 [3 nil [4 [5 nil nil] [6 nil nil]]] nil]])
    false)
