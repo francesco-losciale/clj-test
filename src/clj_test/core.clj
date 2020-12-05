@@ -905,12 +905,18 @@ print-nums                                                  ; only when evaluate
 
 
 (defn is-symmetric? [t]
+  (comment
+    (def t '(:a (:b nil nil) nil)))
   (if (and (not (empty? t)) (is-btree? t))
-    (and (is-symmetric? (nth t 1)) (is-symmetric? (nth t 2)))
+    (if (= (count (filter nil? [(nth t 1) (nth t 2)])) 1)
+      false
+      (and (is-symmetric? (nth t 1)) (is-symmetric? (nth t 2)))
+      )
     (nil? t)))
 (= (is-symmetric? '()) false)
 (= (is-symmetric? '(:a)) false)
 (= (is-symmetric? '(:a (:b nil nil) (:b nil nil))) true)
+(= (is-symmetric? '(:a nil nil)) true)
 (= (is-symmetric? '(:a (:b nil nil) nil)) false)
 (= (is-symmetric? '(:a (:b nil nil) (:c nil nil))) false)
 (= (is-symmetric? [1 [2 nil [3 [4 [5 nil nil] [6 nil nil]] nil]]
