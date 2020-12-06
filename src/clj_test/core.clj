@@ -934,3 +934,33 @@ print-nums                                                  ; only when evaluate
 (= (symmetric-tree? [1 [2 nil [3 [4 [5 nil nil] [6 nil nil]] nil]]
                    [2 [3 nil [4 [5 nil nil] [6 nil nil]]] nil]])
    false)
+
+
+
+;Write a higher-order function which flips the order of the arguments
+; of an input function.
+
+(defn flip-args [f]
+  #(f %2 %1))
+(= 3 ((flip-args nth) 2 [1 2 3 4 5]))
+(= true ((flip-args >) 7 8))
+(= 4 ((flip-args quot) 2 8))
+(= [1 2 3] ((flip-args take) [1 2 3 4 5] 3))
+
+
+
+;Write a function which can rotate a sequence in either direction.
+(defn rotate-by [n s]
+  (comment
+    (def n 2)
+    (def s [1 2 3 4 5]))
+  (cond
+    (> n 0) (rotate-by (dec n) (conj (apply vector (rest s)) (first s)))
+    (< n 0) (rotate-by (inc n) (conj (drop-last s) (last s)))
+    (= n 0) s)
+  )
+(= (rotate-by 2 [1 2 3 4 5]) '(3 4 5 1 2))
+(= (rotate-by -2 [1 2 3 4 5]) '(4 5 1 2 3))
+(= (rotate-by 6 [1 2 3 4 5]) '(2 3 4 5 1))
+(= (rotate-by 1 '(:a :b :c)) '(:b :c :a))
+(= (rotate-by -4 '(:a :b :c)) '(:c :a :b))
