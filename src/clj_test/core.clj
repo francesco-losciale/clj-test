@@ -964,3 +964,11 @@ print-nums                                                  ; only when evaluate
 (= (rotate-by 6 [1 2 3 4 5]) '(2 3 4 5 1))
 (= (rotate-by 1 '(:a :b :c)) '(:b :c :a))
 (= (rotate-by -4 '(:a :b :c)) '(:c :a :b))
+
+;Write a function which reverses the interleave process into x number of
+; subsequences. - solution found online
+(defn reverse-interleave [s n]
+  (apply map list (partition n s)))
+(= (reverse-interleave [1 2 3 4 5 6] 2) '((1 3 5) (2 4 6)))
+(= (reverse-interleave (range 9) 3) '((0 3 6) (1 4 7) (2 5 8)))
+(= (reverse-interleave (range 10) 5) '((0 5) (1 6) (2 7) (3 8) (4 9)))
