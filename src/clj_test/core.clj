@@ -988,3 +988,14 @@ print-nums                                                  ; only when evaluate
 (= (set (split-by-type [:a "foo"  "bar" :b])) #{[:a :b] ["foo" "bar"]})
 (= (set (split-by-type [[1 2] :a [3 4] 5 6 :b])) #{[[1 2] [3 4]] [:a :b] [5 6]})
 
+;Write a function which returns the first x number of prime numbers.
+(defn is-prime? [p]
+  (empty? (filter #(and (= (mod p %) 0) (not= % 1)) (range 1 p))))
+
+(defn primes [n]
+  (take n (filter is-prime? (iterate inc 2))))
+
+(= (primes 2) [2 3])
+(= (primes 5) [2 3 5 7 11])
+(= (last (primes 100)) 541)
+
