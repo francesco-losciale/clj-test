@@ -999,3 +999,21 @@ print-nums                                                  ; only when evaluate
 (= (primes 5) [2 3 5 7 11])
 (= (last (primes 100)) 541)
 
+;Write a function which finds all the anagrams in a vector of words.
+; A word x is an anagram of word y if all the letters in x can be rearranged
+; in a different order to form y. Your function should return a set of sets,
+; where each sub-set is a group of words which are anagrams of each other.
+; Each sub-set should have at least two words. Words without any anagrams
+; should not be included in the result.
+
+(defn anagrams? [w1 w2]
+  (= (frequencies w1) (frequencies w2)))
+(defn find-anagram [words]
+  (clojure.set/select #(> (count %) 1)
+                      (into #{}
+                            (for [w words]
+                              (into #{} (filter #(anagrams? w %) words))))))
+(= (find-anagram ["meat" "mat" "team" "mate" "eat"])
+   #{#{"meat" "team" "mate"}})
+(= (find-anagram ["veer" "lake" "item" "kale" "mite" "ever"])
+   #{#{"veer" "ever"} #{"lake" "kale"} #{"mite" "item"}})
